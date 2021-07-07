@@ -1,5 +1,5 @@
 //import React from 'react';
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Todo, fetchTodos, deleteTodo } from "./actions";
 import { StoreState } from "./reducers";
@@ -10,49 +10,39 @@ interface AppProps {
   deleteTodo: Function;
 }
 
-interface AppState {
-  fetching: boolean;
-}
+const _App: React.FC<AppProps> = ({ fetchTodos, deleteTodo, todos }) => {
+  const [fetching, setFetching] = useState(false);
 
-class _App extends React.Component<AppProps, AppState> {
-  constructor(props: AppProps) {
-    super(props);
-    this.state = { fetching: false };
-  }
-
-  componentDidUpdate(prevProps: AppProps): void {
-    if (!prevProps.todos.length && this.props.todos.length) {
-      this.setState({ fetching: false });
+  useEffect(() => {
+    if (todos.length && fetching) {
+      setFetching(false);
     }
-  }
+  }, [todos]);
 
-  onButtonClick = (): void => {
-    this.props.fetchTodos();
-    this.setState({ fetching: true });
+  const onButtonClick = (): void => {
+    fetchTodos();
+    setFetching(true);
   };
 
-  onListClick = (id: number): void => {
-    this.props.deleteTodo(id);
+  const onListClick = (id: number): void => {
+    deleteTodo(id);
   };
 
-  renderList(): JSX.Element[] {
-    return this.props.todos.map((todo) => (
-      <div key={todo.id} onClick={() => this.onListClick(todo.id)}>
+  const renderList = (): JSX.Element[] => {
+    return todos.map((todo) => (
+      <div key={todo.id} onClick={() => onListClick(todo.id)}>
         {todo.title}
       </div>
     ));
-  }
+  };
 
-  render() {
-    return (
-      <div>
-        <button onClick={this.onButtonClick}>Fetch</button>
-        {this.renderList()}
-        {this.state.fetching && <div>Loading</div>}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <button onClick={onButtonClick}>Fetch</button> {fetching && <span>Loading</span>}
+      {renderList()}
+    </div>
+  );
+};
 
 const mapStateToProps = ({ todos }: StoreState): { todos: Todo[] } => {
   return { todos };
