@@ -17,7 +17,7 @@ const _App: React.FC<AppProps> = ({ fetchTodos, deleteTodo, todos }) => {
     if (todos.length && fetching) {
       setFetching(false);
     }
-  }, [todos]);
+  }, [todos, fetching]);
 
   const onButtonClick = (): void => {
     fetchTodos();
