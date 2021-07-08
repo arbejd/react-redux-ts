@@ -1,6 +1,7 @@
 //import React from 'react';
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { tokenToString } from "typescript";
 import { Todo, fetchTodos, deleteTodo } from "./actions";
 import { StoreState } from "./reducers";
 
@@ -8,9 +9,10 @@ interface AppProps {
   todos: Todo[];
   fetchTodos: Function;
   deleteTodo: Function;
+  buttonName: string;
 }
 
-const _App: React.FC<AppProps> = ({ fetchTodos, deleteTodo, todos }) => {
+const _App: React.FC<AppProps> = ({ fetchTodos, deleteTodo, todos, buttonName }) => {
   const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
@@ -28,17 +30,26 @@ const _App: React.FC<AppProps> = ({ fetchTodos, deleteTodo, todos }) => {
     deleteTodo(id);
   };
 
-  const renderList = (): JSX.Element[] => {
-    return todos.map((todo) => (
-      <div key={todo.id} onClick={() => onListClick(todo.id)}>
-        {todo.title}
+  const renderList = (): JSX.Element => {
+    return (
+      <div role="list">
+        {todos.map((todo) => (
+          <div
+            role="listitem"
+            aria-label={todo.title}
+            key={todo.id}
+            onClick={() => onListClick(todo.id)}
+          >
+            {todo.title}
+          </div>
+        ))}
       </div>
-    ));
+    );
   };
 
   return (
     <div>
-      <button onClick={onButtonClick}>Fetch</button> {fetching && <span>Loading</span>}
+      <button onClick={onButtonClick}>{buttonName}</button> {fetching && <span>Loading</span>}
       {renderList()}
     </div>
   );
