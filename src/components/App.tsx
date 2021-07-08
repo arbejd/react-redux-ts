@@ -1,9 +1,8 @@
 //import React from 'react';
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { tokenToString } from "typescript";
-import { Todo, fetchTodos, deleteTodo } from "./actions";
-import { StoreState } from "./reducers";
+import { Todo, fetchTodos, deleteTodo } from "../actions";
+import { StoreState } from "../reducers";
 
 interface AppProps {
   todos: Todo[];

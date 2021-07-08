@@ -1,7 +1,7 @@
 import React from "react";
-import { render, screen, contextRender, fireEvent, wait } from "./__test__/test-utils";
+import { screen, contextRender, fireEvent } from "../__test__/test-utils";
 import { App } from "./App";
-import { testTodoList } from "./__test__/testTodos";
+import { testTodoList } from "../__test__/testTodos";
 import axios from "axios";
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -41,7 +41,7 @@ describe("fetch button", () => {
     });
 
     it("should fetch multiple tasks when button is pressed", async () => {
-      mockedAxios.get.mockResolvedValueOnce({ data: testTodoList });
+      mockedAxios.get.mockResolvedValueOnce({ data: [testTodoList[0]] });
 
       contextRender(<App buttonName={buttonName} />);
 
@@ -66,9 +66,10 @@ describe("fetch button", () => {
 
       expect(response).not.toBeInTheDocument();
 
-      response = await screen.queryByRole("listitem", { name: testTodoList[0].title });
+      //checking that the rest of the list is still there
+      response = await screen.getByRole("listitem", { name: testTodoList[0].title });
       expect(response).toBeTruthy();
-      response = await screen.queryByRole("listitem", { name: testTodoList[2].title });
+      response = await screen.getByRole("listitem", { name: testTodoList[2].title });
       expect(response).toBeTruthy();
     });
   });
